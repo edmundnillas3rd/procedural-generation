@@ -39,11 +39,27 @@ static auto CreateGridNoise(double density)
 }
 
 template<typename T>
+static T ShallowCopy(T grid)
+{
+    T copy = {};
+
+    for (size_t i = 0; i < grid.size(); i++)
+    {
+        for (size_t j = 0; j < grid[0].size(); j++)
+        {
+            copy[j][i] = grid[j][i];
+        }
+    }
+
+    return copy;
+}
+
+template<typename T>
 static void ApplyCellularAutomaton(T grid, size_t count)
 {
     for (size_t i = 0; i < count; i++)
     {
-        auto tempGrid = grid;
+        auto tempGrid = ShallowCopy(grid);
         for (size_t j = 0; j < grid.size(); j++)
         {
             for (size_t k = 0; k < grid[0].size(); k++)
