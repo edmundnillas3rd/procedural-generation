@@ -53,7 +53,7 @@ static void ApplyCellularAutomaton(T grid, size_t count)
                 {
                     for (size_t x = k - 1; x < k + 1; x++)
                     {
-                        if (y >= 1 && x >= 1 && y <= grid.size() && x <= grid[0].size())
+                        if (y >= 0 && x >= 0 && y <= grid.size() && x <= grid[0].size())
                         {
                             if (y != j || x != k)
                                 if (tempGrid[y][x] == "Wall")
@@ -122,9 +122,10 @@ static void RunApplication()
 
     const uint32_t WIDTH = 32, HEIGHT = 32;
     auto grid = CreateGridNoise<Grid<WIDTH, HEIGHT>>(50.0);
-    ApplyCellularAutomaton(grid, 40);
+    ApplyCellularAutomaton(grid, 4);
     
     bool running = true;
+    uint32_t count = 0;
     while (running)
     {
         SDL_Event e;
@@ -135,12 +136,31 @@ static void RunApplication()
             case SDL_QUIT:
                 running = false;
                 break;
+
+            case SDL_MOUSEWHEEL:
+                {
+                    std::cout << count << std::endl;
+                    if (e.wheel.y > 0)
+                    {
+                        count == 100 ? (count = 100) : count++;
+                    }
+                    else if (e.wheel.y < 0)
+                    {
+                        count == 0 ? (count = 0) : count--;
+                    }
+
+                    grid = CreateGridNoise<Grid<WIDTH, HEIGHT>>(50.0);
+                    ApplyCellularAutomaton(grid, count);
+                    
+                    break;
+                }
             }
         }
 
+        SDL_RenderPresent(s_Renderer);
+        SDL_SetRenderDrawColor(s_Renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(s_Renderer);
         RenderGrid(grid);
-        SDL_RenderPresent(s_Renderer);
     }
 
     ShutdownSDL();
