@@ -5,6 +5,7 @@
 # CMake Build files/directories
 /build/
 /bin/
+/out/
 
 # Conanfiles
 CMakeUserPresets.json
