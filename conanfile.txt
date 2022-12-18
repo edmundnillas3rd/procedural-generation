@@ -1,5 +1,5 @@
 [requires]
-sdl/2.24.0
+sdl/2.0.20
 
 [generators]
 CMakeDeps

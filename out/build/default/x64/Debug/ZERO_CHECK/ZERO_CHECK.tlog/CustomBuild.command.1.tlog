@@ -1,0 +1,10 @@
+^C:\DEV\CXX\PROCEDURAL-GENERATION\OUT\BUILD\DEFAULT\CMAKEFILES\3BAFAC4C68A47EB37F6DE5CC8D05D9ED\GENERATE.STAMP.RULE
+setlocal
+C:\CMake\bin\cmake.exe -SC:/dev/cxx/procedural-generation -BC:/dev/cxx/procedural-generation/out/build/default --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/dev/cxx/procedural-generation/out/build/default/procedural_generation.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
