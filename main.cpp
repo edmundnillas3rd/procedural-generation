@@ -128,6 +128,8 @@ static void RunApplication()
     
     bool running = true;
     uint32_t count = 0;
+    float noise = 0.0f;
+
     while (running)
     {
         SDL_Event e;
@@ -141,7 +143,7 @@ static void RunApplication()
 
             case SDL_MOUSEWHEEL:
                 {
-                    std::cout << count << std::endl;
+                    std::cout << "Grid Count Value: "<< count << std::endl;
                     if (e.wheel.y > 0)
                     {
                         count == 100 ? (count = 100) : count++;
@@ -156,7 +158,31 @@ static void RunApplication()
                     
                     break;
                 }
+            case SDL_KEYDOWN:
+                {
+                    std::cout << "Noise Value: " << noise << std::endl;
+
+                    switch (e.key.keysym.sym)
+                    {
+                    case SDLK_UP:
+                        {
+                            noise > 100.0f ? (noise = 100.0f) : noise++;
+                            break;
+                        }
+                    case SDLK_DOWN:
+                        {
+                            noise < 0.0f ? (noise = 0.0f) : noise--;
+                            break;
+                        }
+                    }
+                    
+                    grid = CreateGridNoise<Grid<WIDTH, HEIGHT>>(noise);
+                    ApplyCellularAutomaton(grid, count);
+                    break;
+                }
+
             }
+
         }
 
         SDL_RenderPresent(s_Renderer);
