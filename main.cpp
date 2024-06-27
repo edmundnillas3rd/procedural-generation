@@ -7,7 +7,8 @@
 
 static const uint32_t SCREEN_WIDTH = 1280;
 static const uint32_t SCREEN_HEIGHT = 640;
-static const uint32_t WIDTH = 160, HEIGHT = 90;
+#define WIDTH 160
+#define HEIGHT 90
 
 static SDL_Window* s_Window = nullptr;
 static SDL_Renderer* s_Renderer = nullptr;
@@ -26,7 +27,7 @@ struct Player
 static Camera camera;
 static Player player;
 
-static void GenerateNoise(std::array<std::array<std::string, 160>, 90>& grid, double noiseDensity)
+static void GenerateNoise(std::array<std::array<std::string, WIDTH>, HEIGHT>& grid, double noiseDensity)
 {
     std::random_device rd;
     std::mt19937_64 gen64(rd());
@@ -50,7 +51,7 @@ static void GenerateNoise(std::array<std::array<std::string, 160>, 90>& grid, do
 }
 
 
-static void RenderGrid(const std::array<std::array<std::string, 160>, 90>& grid)
+static void RenderGrid(const std::array<std::array<std::string, WIDTH>, HEIGHT>& grid)
 {
     int xoffset = 250;
     int yoffset = 250;
@@ -77,21 +78,22 @@ static void RenderGrid(const std::array<std::array<std::string, 160>, 90>& grid)
     }
 }
 
-static void ApplyCellularAutomaton(std::array<std::array<std::string, 160>, 90>& grid, size_t count)
+static void ApplyCellularAutomaton(std::array<std::array<std::string, WIDTH>, HEIGHT>& grid, size_t count)
 {
     for (size_t i = 0; i < count; i++)
     {
-        std::array<std::array<std::string, 160>, 90>& tempGrid = grid;
+        std::array<std::array<std::string, WIDTH>, HEIGHT>& tempGrid = grid;
 
 
-        for (size_t j = 0; j < HEIGHT; j++)
+        for (int j = 0; j < HEIGHT; j++)
         {
-            for (size_t k = 0; k < WIDTH; k++)
+            for (int k = 0; k < WIDTH; k++)
             {
                 auto neighborWallCount = 0;
-                for (size_t y = j - 1; y <= j + 1; y++)
+                bool border = false;
+                for (int y = j - 1; y <= j + 1; y++)
                 {
-                    for (size_t x = k - 1; x <= k + 1; x++)
+                    for (int x = k - 1; x <= k + 1; x++)
                     {
                         if (y >= 0 && x >= 0 && y < HEIGHT && x < WIDTH)
                         {
@@ -100,10 +102,10 @@ static void ApplyCellularAutomaton(std::array<std::array<std::string, 160>, 90>&
                                     neighborWallCount++;
                         }
                         else
-                            neighborWallCount++;
+                            border = true;
                     }
                 }
-                if (neighborWallCount > 4)
+                if (neighborWallCount > 4 || border)
                     grid[j][k] = "Wall";
                 else if (neighborWallCount < 4)
                     grid[j][k] = "Floor";
@@ -156,9 +158,6 @@ static void RunApplication()
                 break;
              case SDL_KEYDOWN:
                 {
-                    std::cout << "Noise Value: " << noise << std::endl;
-                    std::cout << "Iteration count: " << count << std::endl;
-
 
                     switch (e.key.keysym.sym)
                     {
@@ -197,7 +196,8 @@ static void RunApplication()
                         }
                     }
                     
-                    
+                    std::cout << "Noise Value: " << noise << std::endl;
+                    std::cout << "Iteration count: " << count << std::endl;
                 }
                 break;
             }
@@ -205,7 +205,7 @@ static void RunApplication()
 
         const Uint8* state = SDL_GetKeyboardState(nullptr);
 
-        const int SPEED = 5;
+        const int SPEED = 100;
 
         if (state[SDL_SCANCODE_W])
         {
